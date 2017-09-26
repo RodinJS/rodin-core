@@ -1,3 +1,3 @@
-[submodule "rodin-sandbox"]
-	path = rodin-sandbox
+[submodule "third_party/rodin-sandbox"]
+	path = third_party/rodin-sandbox
 	url = git@github.com:serghov/rodin-sandbox.git
