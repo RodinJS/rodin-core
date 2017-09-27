@@ -2,11 +2,6 @@
   "name": "Example",
   "main": "index.js",
   "dependencies": {
-    "rodin": [
-      "http://192.168.0.31:8000"
-    ],
-    "rodinvendor": [
-      "http://192.168.0.31:1234"
-    ]
+    "rodin/main": "0.1.*"
   }
 }

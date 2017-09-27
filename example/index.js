@@ -1,6 +1,4 @@
-import 'http://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.min.js';
-import 'rodinvendor/vendor.js';
-import * as RODIN from 'rodin/core/index.js';
+import * as RODIN from 'rodin/main';
 
 RODIN.start();
 
