@@ -1,0 +1,25 @@
+{
+  "name": "rodin-core",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/app.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serghov/rodin-core.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/serghov/rodin-core/issues"
+  },
+  "homepage": "https://github.com/serghov/rodin-core#readme",
+  "scripts": {
+    "build": "rollup -c rollup.config.js"
+  }
+}
