@@ -4131,7 +4131,7 @@
 
 	        return _resolveManifest(data).then(() => {
 	            console.log(dependencyMap);
-	            return Promise.resolve({dependencyMap, main: getURL("index.js", dependencyMap)});
+	            return Promise.resolve({dependencyMap, main: getURL(JSON.parse(data).main || 'index.js', dependencyMap)});
 	        });
 
 	    });
