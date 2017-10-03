@@ -2,12 +2,16 @@ import * as ajax from "../third_party/rodin-sandbox/lib/ajax.js";
 import * as path from "../third_party/rodin-sandbox/lib/path.js";
 import {JSHandler} from "../third_party/rodin-sandbox/lib/JSHandler.js";
 import * as semver from '../third_party/semver/semver.js';
+import * as RodinPackage from './RodinPackage.js';
 
+window.RodinPackage = RodinPackage;
 window.semver = semver;
 
 
 // const cdn_url = 'http://192.168.0.207:4321';
-const cdn_url = 'http://192.168.0.31:8000';
+const cdn_url = 'http://192.168.0.31:4321';
+const default_env = 'prod';
+
 
 const getURL = (filename, urlMap = null) => {
 
@@ -30,9 +34,9 @@ const getManifest = () => {
 
         const dependencyMap = {};
 
-        const _resolveManifest = (manifest) => {
-            const pkg = JSON.parse(manifest);
-
+        const _resolveManifest = (pkg) => {
+            // const pkg = JSON.parse(manifest);
+            const env = pkg.env || default_env;
             console.log(`Running ${pkg.name}...`);
 
             const promises = [];
@@ -53,7 +57,7 @@ const getManifest = () => {
                     }
 
                     version = pkg.dependencies[i];
-                    const availableVersions = Object.keys(meta.v);
+                    const availableVersions = meta.v;
 
                     if (meta.semver) {
                         version = semver.maxSatisfying(availableVersions, version);
@@ -63,22 +67,21 @@ const getManifest = () => {
                     }
 
 
-                    return ajax.get(path.join(cdn_url, i, version, 'bundle/rodin_package.json'));
+                    return ajax.get(path.join(cdn_url, i, version, 'rodin_package.json'));
 
                 }).then((data) => {
-                    console.log(typeof data, data);
-                    const pkg = JSON.parse(data);
-                    dependencyMap[i] = path.join(cdn_url, i, version, 'bundle/', pkg.main);
-                    return _resolveManifest(data);
+                    const pkg = RodinPackage.getEnv(JSON.parse(data), env);
+                    dependencyMap[i] = path.join(cdn_url, i, version, pkg.main);
+                    return _resolveManifest(pkg);
                 }));
             }
 
             return Promise.all(promises);
         };
-
-        return _resolveManifest(data).then(() => {
+        const pkg = JSON.parse(data);
+        return _resolveManifest(pkg).then(() => {
             console.log(dependencyMap);
-            return Promise.resolve({dependencyMap, main: getURL(JSON.parse(data).main || 'index.js', dependencyMap)});
+            return Promise.resolve({dependencyMap, main: getURL(pkg.main || 'index.js', dependencyMap)});
         });
 
     });

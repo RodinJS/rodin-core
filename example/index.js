@@ -1,7 +1,7 @@
 import * as RODIN from 'rodin/main';
 
-RODIN.start();
 window.R = RODIN;
+RODIN.start();
 const box = new RODIN.Box();
 
 RODIN.Scene.add(box);
