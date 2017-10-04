@@ -4062,10 +4062,35 @@
 		default: semver
 	});
 
+	const getEnv = (rodinPackage, env) => {
+	    let envInfo = {};
+	    for (let i in rodinPackage.sources) {
+	        if (rodinPackage.sources[i].env === env) {
+	            envInfo = Object.assign(envInfo, rodinPackage.sources[i]);
+	            break;
+	        }
+	    }
+
+	    const res = Object.assign({}, rodinPackage);
+	    delete res.sources;
+	    const dependencies = Object.assign(res.dependencies || {}, envInfo.dependencies || {});
+	    Object.assign(res, envInfo);
+	    res.dependencies = dependencies;
+	    return res;
+	};
+
+var RodinPackage = Object.freeze({
+		getEnv: getEnv
+	});
+
+	window.RodinPackage = RodinPackage;
 	window.semver = semver$2;
 
 
-	const cdn_url = 'http://192.168.0.207:4321';
+	// const cdn_url = 'http://192.168.0.207:4321';
+	let cdn_url = 'https://cdn.rodin.io/';
+	const default_env = 'prod';
+
 
 	const getURL = (filename, urlMap = null) => {
 
@@ -4088,9 +4113,9 @@
 
 	        const dependencyMap = {};
 
-	        const _resolveManifest = (manifest) => {
-	            const pkg = JSON.parse(manifest);
-
+	        const _resolveManifest = (pkg) => {
+	            // const pkg = JSON.parse(manifest);
+	            const env = pkg.env || default_env;
 	            console.log(`Running ${pkg.name}...`);
 
 	            const promises = [];
@@ -4101,6 +4126,7 @@
 	                if (dependencyMap.hasOwnProperty(i)) {
 	                    continue;
 	                }
+	                let version = null;
 
 	                promises.push(get(join(cdn_url, i, 'meta.json')).then((meta) => {
 	                    try {
@@ -4109,29 +4135,34 @@
 	                        // reject
 	                    }
 
-	                    let version = pkg.dependencies[i];
+	                    version = pkg.dependencies[i];
+	                    const availableVersions = meta.v;
 
 	                    if (meta.semver) {
-	                        version = semver_31(meta.v, version);
+	                        version = semver_31(availableVersions, version);
 	                    }
-	                    if (version === null || (!meta.semver && meta.v.indexOf(version) === -1)) {
+	                    if (version === null || (!meta.semver && availableVersions.indexOf(version) === -1)) {
 	                        throw new Error(`Invalid version for ${cdn_url}, ${version}`);
 	                    }
 
-	                    dependencyMap[i] = join(cdn_url, i, version, 'source/index.js');
-	                    return get(join(cdn_url, i, version, 'source/rodin_package.json'));
+
+	                    return get(join(cdn_url, i, version, 'rodin_package.json'));
 
 	                }).then((data) => {
-	                    return _resolveManifest(data);
+	                    const pkg = getEnv(JSON.parse(data), env);
+	                    dependencyMap[i] = join(cdn_url, i, version, pkg.main);
+	                    return _resolveManifest(pkg);
 	                }));
 	            }
 
 	            return Promise.all(promises);
 	        };
+	        const pkg = JSON.parse(data);
+	        cdn_url = pkg.___cdn_url || cdn_url;
 
-	        return _resolveManifest(data).then(() => {
+	        return _resolveManifest(pkg).then(() => {
 	            console.log(dependencyMap);
-	            return Promise.resolve({dependencyMap, main: getURL(JSON.parse(data).main || 'index.js', dependencyMap)});
+	            return Promise.resolve({dependencyMap, main: getURL(pkg.main || 'index.js', dependencyMap)});
 	        });
 
 	    });
