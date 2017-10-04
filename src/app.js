@@ -9,7 +9,7 @@ window.semver = semver;
 
 
 // const cdn_url = 'http://192.168.0.207:4321';
-const cdn_url = 'http://192.168.0.31:4321';
+let cdn_url = 'https://cdn.rodin.io/';
 const default_env = 'prod';
 
 
@@ -79,6 +79,8 @@ const getManifest = () => {
             return Promise.all(promises);
         };
         const pkg = JSON.parse(data);
+        cdn_url = pkg.___cdn_url || cdn_url;
+
         return _resolveManifest(pkg).then(() => {
             console.log(dependencyMap);
             return Promise.resolve({dependencyMap, main: getURL(pkg.main || 'index.js', dependencyMap)});
