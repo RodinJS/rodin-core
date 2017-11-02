@@ -1,3 +1,6 @@
 [submodule "third_party/rodin-sandbox"]
 	path = third_party/rodin-sandbox
 	url = git@github.com:serghov/rodin-sandbox.git
+[submodule "third_party/document-register-element"]
+	path = third_party/document-register-element
+	url = https://github.com/gormat/document-register-element.git

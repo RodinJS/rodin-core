@@ -1,6 +1,4 @@
 (function () {
-	'use strict';
-
 	const _request = function () {
 	    if (typeof XMLHttpRequest !== 'undefined') {
 	        return new XMLHttpRequest();
@@ -4086,11 +4084,8 @@ var RodinPackage = Object.freeze({
 	window.RodinPackage = RodinPackage;
 	window.semver = semver$2;
 
-
-	// const cdn_url = 'http://192.168.0.207:4321';
 	let cdn_url = 'https://cdn.rodin.io/';
 	const default_env = 'prod';
-
 
 	const getURL = (filename, urlMap = null) => {
 
@@ -4164,11 +4159,11 @@ var RodinPackage = Object.freeze({
 	            console.log(dependencyMap);
 	            return Promise.resolve({dependencyMap, main: getURL(pkg.main || 'index.js', dependencyMap)});
 	        });
-
 	    });
 	};
 
 	getManifest().then((data) => {
+	    console.log('data', data);
 	    new JSHandler(data.main, data.dependencyMap);
 	});
 

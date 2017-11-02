@@ -7,11 +7,8 @@ import * as RodinPackage from './RodinPackage.js';
 window.RodinPackage = RodinPackage;
 window.semver = semver;
 
-
-// const cdn_url = 'http://192.168.0.207:4321';
 let cdn_url = 'https://cdn.rodin.io/';
 const default_env = 'prod';
-
 
 const getURL = (filename, urlMap = null) => {
 
@@ -85,10 +82,10 @@ const getManifest = () => {
             console.log(dependencyMap);
             return Promise.resolve({dependencyMap, main: getURL(pkg.main || 'index.js', dependencyMap)});
         });
-
     });
 };
 
 getManifest().then((data) => {
+    console.log('data', data);
     new JSHandler(data.main, data.dependencyMap);
 });

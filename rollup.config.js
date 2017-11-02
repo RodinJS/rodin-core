@@ -11,5 +11,6 @@ export default {
             dest: 'build/rodin_core.js'
         }
     ],
-    treeshake: false
+    treeshake: false,
+    strict: false
 };
