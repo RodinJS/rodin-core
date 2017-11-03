@@ -1,0 +1,8 @@
+{
+  "name": "Example",
+  "main": "scene.html",
+  "___cdn_url": "https://cdn2.rodin.io/",
+  "dependencies": {
+    "rodin/main": "0.1.*"
+  }
+}

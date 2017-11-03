@@ -4156,15 +4156,34 @@ var RodinPackage = Object.freeze({
 	        cdn_url = pkg.___cdn_url || cdn_url;
 
 	        return _resolveManifest(pkg).then(() => {
-	            console.log(dependencyMap);
 	            return Promise.resolve({dependencyMap, main: getURL(pkg.main || 'index.js', dependencyMap)});
 	        });
 	    });
 	};
 
 	getManifest().then((data) => {
-	    console.log('data', data);
-	    new JSHandler(data.main, data.dependencyMap);
+	    const extension = data.main.substring(data.main.lastIndexOf('.') + 1).toLowerCase();
+	    if(extension === 'js') {
+	        return new JSHandler(data.main, data.dependencyMap);
+	    }
+
+	    if(extension === 'html') {
+	        // todo: add Aframe project
+	    }
+
+	    switch (extension) {
+	        case 'js':
+	            new JSHandler(data.main, data.dependencyMap);
+	            break;
+
+	        case 'html':
+	            // todo: Add Aframe support
+	            console.log('HTML Project detected');
+	            break;
+
+	        default:
+	            throw new Error(`unknown file extension "${extension}"`)
+	    }
 	});
 
 }());
