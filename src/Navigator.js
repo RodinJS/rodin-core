@@ -1,4 +1,4 @@
-class CustomNavigator {
+export class CustomNavigator {
     constructor() {
 
     }

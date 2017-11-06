@@ -3,6 +3,8 @@ import * as path from "../third_party/rodin-sandbox/lib/path.js";
 import {JSHandler} from "../third_party/rodin-sandbox/lib/JSHandler.js";
 import * as semver from '../third_party/semver/semver.js';
 import * as RodinPackage from './RodinPackage.js';
+import {CustomWindow} from './Window.js';
+import {watchFor} from "./watcher.js";
 
 window.RodinPackage = RodinPackage;
 window.semver = semver;
@@ -23,6 +25,7 @@ const getURL = (filename, urlMap = null) => {
     if (path.getFile(window.location.href).indexOf(".") !== -1) {
         return path.join(path.getDirectory(window.location.href), filename);
     }
+
     return path.join(window.location.href, filename);
 };
 
@@ -84,20 +87,153 @@ const getManifest = () => {
     });
 };
 
-getManifest().then((data) => {
-    const extension = data.main.substring(data.main.lastIndexOf('.') + 1).toLowerCase();
+// todo: fix this
+const coreDependencies = [
+    'https://cdn2.rodin.io/threejs/main/latest/bundle/three.min.js',
+].map(x => ajax.get(x));
 
-    switch (extension) {
-        case 'js':
-            new JSHandler(data.main, data.dependencyMap);
-            break;
+Promise.all(coreDependencies).then((data) => {
+    const _window = runSandboxed(data[0], {});
+    const _renderer = makeRenderer(_window.THREE);
 
-        case 'html':
-            // todo: Add Aframe support
-            console.log('HTML Project detected');
-            break;
-
-        default:
-            throw new Error(`unknown file extension "${extension}"`)
-    }
+    console.log('Rodin core ready');
+    runExample(_renderer);
 });
+
+const bindTHREEJSRenderer = (_window, _renderer) => {
+
+    watchFor('THREE.WebGLRenderer', _window, (_three) => {
+        return class {
+            constructor() {
+                watchFor('render', this, (render) => {
+                    return (...args) => {
+                        // console.log('render');
+                        _renderer.render(...args);
+                    }
+                });
+            }
+
+            setClearColor() {
+
+            }
+
+            setSize() {
+
+            }
+
+            getSize() {
+                return _renderer.getSize();
+            }
+
+            setPixelRatio() {
+
+            }
+
+            getPixelRatio() {
+                return _renderer.getPixelRatio();
+            }
+
+            getContext() {
+                return _renderer.getContext();
+            }
+
+            get shadowMap() {
+                return _renderer.shadowMap;
+            }
+
+            get domElement() {
+                return window.document.createElement('p');
+            }
+
+            get clippingPlanes() {
+                return _renderer.clippingPlanes;
+            }
+
+            set clippingPlanes(val) {
+                _renderer.clippingPlanes = val;
+            }
+
+            get localClippingEnabled() {
+                return _renderer.localClippingEnabled;
+            }
+
+            set localClippingEnabled(val) {
+                _renderer.localClippingEnabled = val;
+            }
+
+            render(...args) {
+                _renderer.render(...args);
+            }
+        };
+    });
+};
+
+const runSandboxed = (source, _window = new CustomWindow()) => {
+    const self = _window;
+    // todo: find normal way to do it
+    eval(`
+    (function () {
+        with (_window) {
+            eval(source);
+        }
+    }).bind(_window)();
+    `);
+    return _window;
+};
+
+const makeRenderer = (_THREE) => {
+    const renderer = new _THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        canvas: window.document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas')
+    });
+
+    renderer.setClearColor("#000000");
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    renderer.domElement.style.position = "absolute";
+    renderer.domElement.style.top = "0";
+    renderer.domElement.style.left = "0";
+
+    return renderer;
+};
+
+const runExample = (_renderer) => {
+    getManifest().then((data) => {
+        const extension = data.main.substring(data.main.lastIndexOf('.') + 1).toLowerCase();
+
+        switch (extension) {
+            case 'js':
+                const _window = new CustomWindow("");
+                window._window = _window;
+
+                eval(`
+                with(_window) {
+                    new JSHandler(data.main, data.dependencyMap);
+                }
+                `);
+                break;
+
+            case 'html':
+                //todo: fix this
+                const promises = [
+                    ajax.get(data.main),
+                    ajax.get('https://cdnjs.cloudflare.com/ajax/libs/aframe/0.7.1/aframe.js')
+                ];
+
+                Promise.all(promises).then((arr) => {
+                    const _window = new CustomWindow(arr[0]);
+                    window._window = _window;
+                    bindTHREEJSRenderer(_window, _renderer);
+                    runSandboxed(arr[1], _window);
+                });
+
+                console.log('HTML Project detected');
+                break;
+
+            default:
+                throw new Error(`unknown file extension "${extension}"`)
+        }
+    });
+};

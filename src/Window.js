@@ -1,4 +1,7 @@
-class CustomWindow {
+import {CustomNavigator} from "./Navigator.js";
+import polyfillWindowRegisterElement from '../third_party/document-register-element/build/document-register-element.esmodule.js';
+
+export class CustomWindow {
     constructor(src) {
         this.window = this;
         this.self = this;

@@ -4081,6 +4081,180 @@ var RodinPackage = Object.freeze({
 		getEnv: getEnv
 	});
 
+	class CustomNavigator {
+	    constructor() {
+
+	    }
+
+	    get userAgent() {
+	        return window.navigator.userAgent;
+	    }
+
+	    set userAgent(value) {
+	        return value;
+	    }
+	}
+
+	/*! (C) WebReflection Mit Style License */
+	var polyfillWindowRegisterElement = (window=window,document=document,override=false)=>{(function(window,document,Object,REGISTER_ELEMENT){"use strict";if(!override&&REGISTER_ELEMENT in document)return;var EXPANDO_UID="__"+REGISTER_ELEMENT+(Math.random()*1e5>>0),ATTACHED="attached",DETACHED="detached",EXTENDS="extends",ADDITION="ADDITION",MODIFICATION="MODIFICATION",REMOVAL="REMOVAL",DOM_ATTR_MODIFIED="DOMAttrModified",DOM_CONTENT_LOADED="DOMContentLoaded",DOM_SUBTREE_MODIFIED="DOMSubtreeModified",PREFIX_TAG="<",PREFIX_IS="=",validName=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,invalidNames=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],types=[],protos=[],query="",documentElement=document.documentElement,indexOf=types.indexOf||function(v){for(var i=this.length;i--&&this[i]!==v;){}return i},OP=Object.prototype,hOP=OP.hasOwnProperty,iPO=OP.isPrototypeOf,defineProperty=Object.defineProperty,gOPD=Object.getOwnPropertyDescriptor,gOPN=Object.getOwnPropertyNames,gPO=Object.getPrototypeOf,sPO=Object.setPrototypeOf,hasProto=!!Object.__proto__,create=Object.create||function Bridge(proto){return proto?(Bridge.prototype=proto,new Bridge):this},setPrototype=sPO||(hasProto?function(o,p){o.__proto__=p;return o}:gOPN&&gOPD?function(){function setProperties(o,p){for(var key,names=gOPN(p),i=0,length=names.length;i<length;i++){key=names[i];if(!hOP.call(o,key)){defineProperty(o,key,gOPD(p,key));}}}return function(o,p){do{setProperties(o,p);}while((p=gPO(p))&&!iPO.call(p,o));return o}}():function(o,p){for(var key in p){o[key]=p[key];}return o}),MutationObserver=window.MutationObserver||window.WebKitMutationObserver,HTMLElementPrototype=(window.HTMLElement||window.Element||window.Node).prototype,IE8=!iPO.call(HTMLElementPrototype,documentElement),isValidNode=IE8?function(node){return node.nodeType===1}:function(node){return iPO.call(HTMLElementPrototype,node)},targets=IE8&&[],cloneNode=HTMLElementPrototype.cloneNode,setAttribute=HTMLElementPrototype.setAttribute,removeAttribute=HTMLElementPrototype.removeAttribute,createElement=document.createElement,attributesObserver=MutationObserver&&{attributes:true,characterData:true,attributeOldValue:true},DOMAttrModified=MutationObserver||function(e){doesNotSupportDOMAttrModified=false;documentElement.removeEventListener(DOM_ATTR_MODIFIED,DOMAttrModified);},asapQueue,rAF=window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.msRequestAnimationFrame||function(fn){setTimeout(fn,10);},setListener=false,doesNotSupportDOMAttrModified=true,dropDomContentLoaded=true,notFromInnerHTMLHelper=true,onSubtreeModified,callDOMAttrModified,getAttributesMirror,observer,patchIfNotAlready,patch;if(sPO||hasProto){patchIfNotAlready=function(node,proto){if(!iPO.call(proto,node)){setupNode(node,proto);}};patch=setupNode;}else{patchIfNotAlready=function(node,proto){if(!node[EXPANDO_UID]){node[EXPANDO_UID]=Object(true);setupNode(node,proto);}};patch=patchIfNotAlready;}if(IE8){doesNotSupportDOMAttrModified=false;(function(){var descriptor=gOPD(HTMLElementPrototype,"addEventListener"),addEventListener=descriptor.value,patchedRemoveAttribute=function(name){var e=new CustomEvent(DOM_ATTR_MODIFIED,{bubbles:true});e.attrName=name;e.prevValue=this.getAttribute(name);e.newValue=null;e[REMOVAL]=e.attrChange=2;removeAttribute.call(this,name);this.dispatchEvent(e);},patchedSetAttribute=function(name,value){var had=this.hasAttribute(name),old=had&&this.getAttribute(name),e=new CustomEvent(DOM_ATTR_MODIFIED,{bubbles:true});setAttribute.call(this,name,value);e.attrName=name;e.prevValue=had?old:null;e.newValue=value;if(had){e[MODIFICATION]=e.attrChange=1;}else{e[ADDITION]=e.attrChange=0;}this.dispatchEvent(e);},onPropertyChange=function(e){var node=e.currentTarget,superSecret=node[EXPANDO_UID],propertyName=e.propertyName,event;if(superSecret.hasOwnProperty(propertyName)){superSecret=superSecret[propertyName];event=new CustomEvent(DOM_ATTR_MODIFIED,{bubbles:true});event.attrName=superSecret.name;event.prevValue=superSecret.value||null;event.newValue=superSecret.value=node[propertyName]||null;if(event.prevValue==null){event[ADDITION]=event.attrChange=0;}else{event[MODIFICATION]=event.attrChange=1;}node.dispatchEvent(event);}};descriptor.value=function(type,handler,capture){if(type===DOM_ATTR_MODIFIED&&this.attributeChangedCallback&&this.setAttribute!==patchedSetAttribute){this[EXPANDO_UID]={className:{name:"class",value:this.className}};this.setAttribute=patchedSetAttribute;this.removeAttribute=patchedRemoveAttribute;addEventListener.call(this,"propertychange",onPropertyChange);}addEventListener.call(this,type,handler,capture);};defineProperty(HTMLElementPrototype,"addEventListener",descriptor);})();}else if(!MutationObserver){documentElement.addEventListener(DOM_ATTR_MODIFIED,DOMAttrModified);documentElement.setAttribute(EXPANDO_UID,1);documentElement.removeAttribute(EXPANDO_UID);if(doesNotSupportDOMAttrModified){onSubtreeModified=function(e){var node=this,oldAttributes,newAttributes,key;if(node===e.target){oldAttributes=node[EXPANDO_UID];node[EXPANDO_UID]=newAttributes=getAttributesMirror(node);for(key in newAttributes){if(!(key in oldAttributes)){return callDOMAttrModified(0,node,key,oldAttributes[key],newAttributes[key],ADDITION)}else if(newAttributes[key]!==oldAttributes[key]){return callDOMAttrModified(1,node,key,oldAttributes[key],newAttributes[key],MODIFICATION)}}for(key in oldAttributes){if(!(key in newAttributes)){return callDOMAttrModified(2,node,key,oldAttributes[key],newAttributes[key],REMOVAL)}}}};callDOMAttrModified=function(attrChange,currentTarget,attrName,prevValue,newValue,action){var e={attrChange:attrChange,currentTarget:currentTarget,attrName:attrName,prevValue:prevValue,newValue:newValue};e[action]=attrChange;onDOMAttrModified(e);};getAttributesMirror=function(node){for(var attr,name,result={},attributes=node.attributes,i=0,length=attributes.length;i<length;i++){attr=attributes[i];name=attr.name;if(name!=="setAttribute"){result[name]=attr.value;}}return result};}}function loopAndVerify(list,action){for(var i=0,length=list.length;i<length;i++){verifyAndSetupAndAction(list[i],action);}}function loopAndSetup(list){for(var i=0,length=list.length,node;i<length;i++){node=list[i];patch(node,protos[getTypeIndex(node)]);}}function executeAction(action){return function(node){if(isValidNode(node)){verifyAndSetupAndAction(node,action);loopAndVerify(node.querySelectorAll(query),action);}}}function getTypeIndex(target){var is=target.getAttribute("is"),nodeName=target.nodeName.toUpperCase(),i=indexOf.call(types,is?PREFIX_IS+is.toUpperCase():PREFIX_TAG+nodeName);return is&&-1<i&&!isInQSA(nodeName,is)?-1:i}function isInQSA(name,type){return-1<query.indexOf(name+'[is="'+type+'"]')}function onDOMAttrModified(e){var node=e.currentTarget,attrChange=e.attrChange,attrName=e.attrName,target=e.target;if(notFromInnerHTMLHelper&&(!target||target===node)&&node.attributeChangedCallback&&attrName!=="style"&&e.prevValue!==e.newValue){node.attributeChangedCallback(attrName,attrChange===e[ADDITION]?null:e.prevValue,attrChange===e[REMOVAL]?null:e.newValue);}}function onDOMNode(action){var executor=executeAction(action);return function(e){asapQueue.push(executor,e.target);}}function onReadyStateChange(e){if(dropDomContentLoaded){dropDomContentLoaded=false;e.currentTarget.removeEventListener(DOM_CONTENT_LOADED,onReadyStateChange);}loopAndVerify((e.target||document).querySelectorAll(query),e.detail===DETACHED?DETACHED:ATTACHED);if(IE8)purge();}function patchedSetAttribute(name,value){var self=this;setAttribute.call(self,name,value);onSubtreeModified.call(self,{target:self});}function setupNode(node,proto){setPrototype(node,proto);if(observer){observer.observe(node,attributesObserver);}else{if(doesNotSupportDOMAttrModified){node.setAttribute=patchedSetAttribute;node[EXPANDO_UID]=getAttributesMirror(node);node.addEventListener(DOM_SUBTREE_MODIFIED,onSubtreeModified);}node.addEventListener(DOM_ATTR_MODIFIED,onDOMAttrModified);}if(node.createdCallback&&notFromInnerHTMLHelper){node.created=true;node.createdCallback();node.created=false;}}function purge(){for(var node,i=0,length=targets.length;i<length;i++){node=targets[i];if(!documentElement.contains(node)){length--;targets.splice(i--,1);verifyAndSetupAndAction(node,DETACHED);}}}function throwTypeError(type){throw new Error("A "+type+" type is already registered")}function verifyAndSetupAndAction(node,action){var fn,i=getTypeIndex(node);if(-1<i){patchIfNotAlready(node,protos[i]);i=0;if(action===ATTACHED&&!node[ATTACHED]){node[DETACHED]=false;node[ATTACHED]=true;i=1;if(IE8&&indexOf.call(targets,node)<0){targets.push(node);}}else if(action===DETACHED&&!node[DETACHED]){node[ATTACHED]=false;node[DETACHED]=true;i=1;}if(i&&(fn=node[action+"Callback"]))fn.call(node);}}document[REGISTER_ELEMENT]=function registerElement(type,options){upperType=type.toUpperCase();if(!setListener){setListener=true;if(MutationObserver){observer=function(attached,detached){function checkEmAll(list,callback){for(var i=0,length=list.length;i<length;callback(list[i++])){}}return new MutationObserver(function(records){for(var current,node,newValue,i=0,length=records.length;i<length;i++){current=records[i];if(current.type==="childList"){checkEmAll(current.addedNodes,attached);checkEmAll(current.removedNodes,detached);}else{node=current.target;if(notFromInnerHTMLHelper&&node.attributeChangedCallback&&current.attributeName!=="style"){newValue=node.getAttribute(current.attributeName);if(newValue!==current.oldValue){node.attributeChangedCallback(current.attributeName,current.oldValue,newValue);}}}}})}(executeAction(ATTACHED),executeAction(DETACHED));observer.observe(document,{childList:true,subtree:true});}else{asapQueue=[];rAF(function ASAP(){while(asapQueue.length){asapQueue.shift().call(null,asapQueue.shift());}rAF(ASAP);});document.addEventListener("DOMNodeInserted",onDOMNode(ATTACHED));document.addEventListener("DOMNodeRemoved",onDOMNode(DETACHED));}document.addEventListener(DOM_CONTENT_LOADED,onReadyStateChange);document.addEventListener("readystatechange",onReadyStateChange);document.createElement=function(localName,typeExtension){var node=createElement.apply(document,arguments),name=""+localName,i=indexOf.call(types,(typeExtension?PREFIX_IS:PREFIX_TAG)+(typeExtension||name).toUpperCase()),setup=-1<i;if(typeExtension){node.setAttribute("is",typeExtension=typeExtension.toLowerCase());if(setup){setup=isInQSA(name.toUpperCase(),typeExtension);}}notFromInnerHTMLHelper=!document.createElement.innerHTMLHelper;if(setup)patch(node,protos[i]);return node};HTMLElementPrototype.cloneNode=function(deep){var node=cloneNode.call(this,!!deep),i=getTypeIndex(node);if(-1<i)patch(node,protos[i]);if(deep)loopAndSetup(node.querySelectorAll(query));return node};}if(-2<indexOf.call(types,PREFIX_IS+upperType)+indexOf.call(types,PREFIX_TAG+upperType)){throwTypeError(type);}if(!validName.test(upperType)||-1<indexOf.call(invalidNames,upperType)){throw new Error("The type "+type+" is invalid")}var constructor=function(){return extending?document.createElement(nodeName,upperType):document.createElement(nodeName)},opt=options||OP,extending=hOP.call(opt,EXTENDS),nodeName=extending?options[EXTENDS].toUpperCase():upperType,upperType,i;if(extending&&-1<indexOf.call(types,PREFIX_TAG+nodeName)){throwTypeError(nodeName);}i=types.push((extending?PREFIX_IS:PREFIX_TAG)+upperType)-1;query=query.concat(query.length?",":"",extending?nodeName+'[is="'+type.toLowerCase()+'"]':nodeName);constructor.prototype=protos[i]=hOP.call(opt,"prototype")?opt.prototype:create(HTMLElementPrototype);loopAndVerify(document.querySelectorAll(query),ATTACHED);return constructor};})(window,document,Object,"registerElement");};
+
+	class CustomWindow {
+	    constructor(src) {
+	        this.window = this;
+	        this.self = this;
+	        this.top = this;
+
+	        this.events = {};
+
+	        this.document = Window.parser.parseFromString(src, 'text/html');
+	        polyfillWindowRegisterElement(window, this.document, true);
+
+	        this.navigator = new CustomNavigator();
+
+	        this._startListenNativeEvents();
+	    }
+
+	    get innerWidth() {
+	        return window.innerWidth;
+	    }
+
+	    get innerHeight() {
+	        return window.innerHeight;
+	    }
+
+	    get XMLHttpRequest() {
+	        return window.XMLHttpRequest;
+	    }
+
+	    get screen() {
+	        return window.screen;
+	    }
+
+	    get HTMLElement() {
+	        return window.HTMLElement;
+	    }
+
+	    get Element() {
+	        return window.Element;
+	    }
+
+	    get Node() {
+	        return window.Node;
+	    }
+
+	    // todo: replace this
+	    get location() {
+	        return window.location;
+	    }
+
+	    _startListenNativeEvents() {
+	        const nativeEvents = [
+	            "vrdisplaypresentchange",
+	            "resize",
+	            "orientationchange",
+	            "keydown",
+	            "mousemove",
+	            "mousedown",
+	            "mouseup",
+	            "message",
+	            "devicemotion",
+	            "touchstart",
+	            "touchmove",
+	            "touchend",
+	            "gamepadconnected",
+	            "gamepaddisconnected",
+	            "keyup",
+	            "blur",
+	            "focus",
+	            "load",
+	            "vrdisplayactivate",
+	            "vrdisplaydeactivate",
+	            "vrdisplaydisconnect",
+	            "vrdisplaypointerrestricted",
+	            "vrdisplaypointerunrestricted",
+	            "vrdisplayconnect"
+	        ];
+
+	        for (let eventName of nativeEvents) {
+	            window.addEventListener(eventName, (evt) => {
+
+	                this.dispatchEvent(evt);
+	                evt = new evt.constructor(evt.type, evt);
+	                const canvas = this.document.getElementsByTagName('canvas')[0];
+	                canvas && canvas.dispatchEvent(evt);
+	            });
+	        }
+	    }
+
+	    alert() {
+	        window.alert(...arguments);
+	    }
+
+	    requestAnimationFrame() {
+	        window.requestAnimationFrame(...arguments);
+	    }
+
+	    addEventListener(eventName, callback) {
+	        if (!this.events[eventName]) {
+	            this.events[eventName] = [];
+	        }
+
+	        this.events[eventName].push(callback);
+	    }
+
+	    removeEventListener(eventName, callback) {
+	        if (this.events[eventName] && this.events[eventName].indexOf(callback) !== -1) {
+	            this.events[eventName].splice(this.events[eventName].indexOf(callback), 1);
+	            return true;
+	        }
+	    }
+
+	    dispatchEvent(event) {
+	        const eventName = event.type;
+
+	        if (this.events[eventName] && this.events[eventName].length > 0) {
+	            for (let f = 0; f < this.events[eventName].length; f++) {
+	                this.events[eventName][f](event);
+	            }
+	        }
+	    }
+	}
+
+	Window.parser = new DOMParser(); // todo: esi lav canr class a. lazy init sarqel
+
+	const watchFor = (param, obj, cb) => {
+
+	    if (typeof param === 'string') {
+	        param = param.split('.');
+	    }
+
+	    if (obj[param[0]]) {
+	        if (param.length !== 1) {
+	            return watchFor(param.slice(1, param.length), obj[param[0]], cb);
+	        }
+	        if (cb) {
+	            return obj[param[0]] = cb(obj[param[0]]);
+	        }
+	        return;
+	    }
+
+	    const newParam = Symbol(param[0]);
+
+	    Object.defineProperty(obj, param[0], {
+	        set: (val) => {
+	            if (param.length !== 1) {
+	                watchFor(param.slice(1, param.length), val, cb);
+	            } else if (cb) {
+	                val = cb(val);
+	            }
+	            obj[newParam] = val;
+	        },
+	        get: () => {
+	            return obj[newParam];
+	        }
+	    });
+	};
+
 	window.RodinPackage = RodinPackage;
 	window.semver = semver$2;
 
@@ -4161,29 +4335,156 @@ var RodinPackage = Object.freeze({
 	    });
 	};
 
-	getManifest().then((data) => {
-	    const extension = data.main.substring(data.main.lastIndexOf('.') + 1).toLowerCase();
-	    if(extension === 'js') {
-	        return new JSHandler(data.main, data.dependencyMap);
-	    }
+	// todo: fix this
+	const coreDependencies = [
+	    'https://cdn2.rodin.io/threejs/main/latest/bundle/three.min.js',
+	].map(x => get(x));
 
-	    if(extension === 'html') {
-	        // todo: add Aframe project
-	    }
+	Promise.all(coreDependencies).then((data) => {
+	    const _window = runSandboxed(data[0], {});
+	    const _renderer = makeRenderer(_window.THREE);
 
-	    switch (extension) {
-	        case 'js':
-	            new JSHandler(data.main, data.dependencyMap);
-	            break;
-
-	        case 'html':
-	            // todo: Add Aframe support
-	            console.log('HTML Project detected');
-	            break;
-
-	        default:
-	            throw new Error(`unknown file extension "${extension}"`)
-	    }
+	    console.log('Rodin core ready');
+	    runExample(_renderer);
 	});
+
+	const bindTHREEJSRenderer = (_window, _renderer) => {
+
+	    watchFor('THREE.WebGLRenderer', _window, (_three) => {
+	        return class {
+	            constructor() {
+	                watchFor('render', this, (render) => {
+	                    return (...args) => {
+	                        // console.log('render');
+	                        _renderer.render(...args);
+	                    }
+	                });
+	            }
+
+	            setClearColor() {
+
+	            }
+
+	            setSize() {
+
+	            }
+
+	            getSize() {
+	                return _renderer.getSize();
+	            }
+
+	            setPixelRatio() {
+
+	            }
+
+	            getPixelRatio() {
+	                return _renderer.getPixelRatio();
+	            }
+
+	            getContext() {
+	                return _renderer.getContext();
+	            }
+
+	            get shadowMap() {
+	                return _renderer.shadowMap;
+	            }
+
+	            get domElement() {
+	                return window.document.createElement('p');
+	            }
+
+	            get clippingPlanes() {
+	                return _renderer.clippingPlanes;
+	            }
+
+	            set clippingPlanes(val) {
+	                _renderer.clippingPlanes = val;
+	            }
+
+	            get localClippingEnabled() {
+	                return _renderer.localClippingEnabled;
+	            }
+
+	            set localClippingEnabled(val) {
+	                _renderer.localClippingEnabled = val;
+	            }
+
+	            render(...args) {
+	                _renderer.render(...args);
+	            }
+	        };
+	    });
+	};
+
+	const runSandboxed = (source, _window = new CustomWindow()) => {
+	    const self = _window;
+	    // todo: find normal way to do it
+	    eval(`
+    (function () {
+        with (_window) {
+            eval(source);
+        }
+    }).bind(_window)();
+    `);
+	    return _window;
+	};
+
+	const makeRenderer = (_THREE) => {
+	    const renderer = new _THREE.WebGLRenderer({
+	        antialias: true,
+	        alpha: true,
+	        canvas: window.document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas')
+	    });
+
+	    renderer.setClearColor("#000000");
+	    renderer.setSize(window.innerWidth, window.innerHeight);
+	    document.body.appendChild(renderer.domElement);
+
+	    renderer.domElement.style.position = "absolute";
+	    renderer.domElement.style.top = "0";
+	    renderer.domElement.style.left = "0";
+
+	    return renderer;
+	};
+
+	const runExample = (_renderer) => {
+	    getManifest().then((data) => {
+	        const extension = data.main.substring(data.main.lastIndexOf('.') + 1).toLowerCase();
+
+	        switch (extension) {
+	            case 'js':
+	                const _window = new CustomWindow("");
+	                window._window = _window;
+
+	                eval(`
+                with(_window) {
+                    new JSHandler(data.main, data.dependencyMap);
+                }
+                `);
+	                break;
+
+	            case 'html':
+	                //todo: fix this
+	                const promises = [
+	                    get(data.main),
+	                    get('https://cdnjs.cloudflare.com/ajax/libs/aframe/0.7.1/aframe.js')
+	                ];
+
+	                Promise.all(promises).then((arr) => {
+	                    const _window = new CustomWindow(arr[0]);
+	                    window._window = _window;
+	                    bindTHREEJSRenderer(_window, _renderer);
+	                    runSandboxed(arr[1], _window);
+	                });
+
+	                console.log('HTML Project detected');
+	                break;
+
+	            default:
+	                throw new Error(`unknown file extension "${extension}"`)
+	        }
+	    });
+
+	};
 
 }());

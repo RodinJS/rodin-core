@@ -1,4 +1,4 @@
-const watchFor = (param, obj, cb) => {
+export const watchFor = (param, obj, cb) => {
 
     if (typeof param === 'string') {
         param = param.split('.');
