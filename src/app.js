@@ -178,6 +178,7 @@ const runSandboxed = (source, _window = new CustomWindow()) => {
         }
     }).bind(_window)();
     `);
+
     return _window;
 };
 
@@ -203,33 +204,37 @@ const runExample = (_renderer) => {
     getManifest().then((data) => {
         const extension = data.main.substring(data.main.lastIndexOf('.') + 1).toLowerCase();
 
+        let _window = null;
+
         switch (extension) {
             case 'js':
-                const _window = new CustomWindow("");
+                _window = new CustomWindow("");
                 window._window = _window;
 
                 eval(`
-                with(_window) {
-                    new JSHandler(data.main, data.dependencyMap);
-                }
+                    with(_window) new JSHandler(data.main, data.dependencyMap)
                 `);
+
                 break;
 
             case 'html':
-                //todo: fix this
-                const promises = [
-                    ajax.get(data.main),
-                    ajax.get('https://cdnjs.cloudflare.com/ajax/libs/aframe/0.7.1/aframe.js')
-                ];
-
-                Promise.all(promises).then((arr) => {
-                    const _window = new CustomWindow(arr[0]);
+                ajax.get(data.main).then(src => {
+                    _window = new CustomWindow(src);
                     window._window = _window;
                     bindTHREEJSRenderer(_window, _renderer);
-                    runSandboxed(arr[1], _window);
+                    const scripts = _window.document.getElementsByTagName('script');
+                    const promises = [];
+                    for(let i = 0; i < scripts.length; i ++) {
+                        promises.push(ajax.get(scripts[i].src))
+                    }
+
+                    return Promise.all(promises);
+                }).then(scripts => {
+                    for(let src of scripts) {
+                        runSandboxed(src, _window);
+                    }
                 });
 
-                console.log('HTML Project detected');
                 break;
 
             default:

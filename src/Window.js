@@ -9,11 +9,13 @@ export class CustomWindow {
 
         this.events = {};
 
-        this.document = Window.parser.parseFromString(src, 'text/html');
+        this.document = CustomWindow.parser.parseFromString(src, 'text/html');
         polyfillWindowRegisterElement(window, this.document, true);
 
         this.navigator = new CustomNavigator();
 
+        this.nativeEventHandlers = {};
+        this._initNativeEventHandlers();
         this._startListenNativeEvents();
     }
 
@@ -50,42 +52,36 @@ export class CustomWindow {
         return window.location;
     }
 
-    _startListenNativeEvents() {
-        const nativeEvents = [
-            "vrdisplaypresentchange",
-            "resize",
-            "orientationchange",
-            "keydown",
-            "mousemove",
-            "mousedown",
-            "mouseup",
-            "message",
-            "devicemotion",
-            "touchstart",
-            "touchmove",
-            "touchend",
-            "gamepadconnected",
-            "gamepaddisconnected",
-            "keyup",
-            "blur",
-            "focus",
-            "load",
-            "vrdisplayactivate",
-            "vrdisplaydeactivate",
-            "vrdisplaydisconnect",
-            "vrdisplaypointerrestricted",
-            "vrdisplaypointerunrestricted",
-            "vrdisplayconnect"
-        ];
+    _initNativeEventHandlers() {
+        for (let i = 0; i < CustomWindow.nativeEventNames.length; i++) {
+            const eventName = CustomWindow.nativeEventNames[i];
 
-        for (let eventName of nativeEvents) {
-            window.addEventListener(eventName, (evt) => {
-
+            this.nativeEventHandlers[eventName] = (evt) => {
                 this.dispatchEvent(evt);
                 evt = new evt.constructor(evt.type, evt);
                 const canvas = this.document.getElementsByTagName('canvas')[0];
                 canvas && canvas.dispatchEvent(evt);
-            })
+            };
+        }
+    }
+
+    _subscribeToNativeEvent(eventName) {
+        window.addEventListener(eventName, this.nativeEventHandlers[eventName]);
+    }
+
+    _unsubscribeFromNativeEvent(eventName) {
+        window.removeEventListener(eventName, this.nativeEventHandlers[eventName]);
+    }
+
+    _startListenNativeEvents() {
+        for (let eventName of CustomWindow.nativeEventNames) {
+            this._subscribeToNativeEvent(eventName);
+        }
+    }
+
+    _stopListenNativeEvents() {
+        for (let eventName of CustomWindow.nativeEventNames) {
+            this._unsubscribeFromNativeEvent(eventName);
         }
     }
 
@@ -121,6 +117,39 @@ export class CustomWindow {
             }
         }
     }
+
+    dispose() {
+        this.requestAnimationFrame = () => {
+        };
+
+        this._stopListenNativeEvents();
+    }
 }
 
-Window.parser = new DOMParser(); // todo: esi lav canr class a. lazy init sarqel
+CustomWindow.parser = new DOMParser(); // todo: esi lav canr class a. lazy init sarqel
+CustomWindow.nativeEventNames = [
+    "vrdisplaypresentchange",
+    "resize",
+    "orientationchange",
+    "keydown",
+    "mousemove",
+    "mousedown",
+    "mouseup",
+    "message",
+    "devicemotion",
+    "touchstart",
+    "touchmove",
+    "touchend",
+    "gamepadconnected",
+    "gamepaddisconnected",
+    "keyup",
+    "blur",
+    "focus",
+    "load",
+    "vrdisplayactivate",
+    "vrdisplaydeactivate",
+    "vrdisplaydisconnect",
+    "vrdisplaypointerrestricted",
+    "vrdisplaypointerunrestricted",
+    "vrdisplayconnect"
+];
