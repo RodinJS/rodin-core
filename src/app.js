@@ -6,9 +6,6 @@ import * as RodinPackage from './RodinPackage.js';
 import {CustomWindow} from './Window.js';
 import {watchFor} from "./watcher.js";
 
-window.RodinPackage = RodinPackage;
-window.semver = semver;
-
 let cdn_url = 'https://cdn.rodin.io/';
 const default_env = 'prod';
 
@@ -42,11 +39,16 @@ const getManifest = () => {
             const promises = [];
 
             for (let i in pkg.dependencies) {
+                if(!pkg.dependencies.hasOwnProperty(i)) {
+                    continue;
+                }
+
                 // todo: check for semver versions and do all the resolutions
 
                 if (dependencyMap.hasOwnProperty(i)) {
                     continue;
                 }
+
                 let version = null;
 
                 promises.push(ajax.get(path.join(cdn_url, i, 'meta.json')).then((meta) => {
@@ -62,10 +64,10 @@ const getManifest = () => {
                     if (meta.semver) {
                         version = semver.maxSatisfying(availableVersions, version);
                     }
+
                     if (version === null || (!meta.semver && availableVersions.indexOf(version) === -1)) {
                         throw new Error(`Invalid version for ${cdn_url}, ${version}`);
                     }
-
 
                     return ajax.get(path.join(cdn_url, i, version, 'rodin_package.json'));
 
