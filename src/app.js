@@ -91,7 +91,7 @@ const getManifest = () => {
 
 // todo: fix this
 const coreDependencies = [
-    'https://cdn2.rodin.io/threejs/main/latest/bundle/three.min.js',
+    'https://cdn2.rodin.io/threejs/main/r88/bundle/three.min.js',
 ].map(x => ajax.get(x));
 
 Promise.all(coreDependencies).then((data) => {
@@ -109,7 +109,6 @@ const bindTHREEJSRenderer = (_window, _renderer) => {
             constructor() {
                 watchFor('render', this, (render) => {
                     return (...args) => {
-                        // console.log('render');
                         _renderer.render(...args);
                     }
                 });
@@ -227,7 +226,13 @@ const runExample = (_renderer) => {
                     const scripts = _window.document.getElementsByTagName('script');
                     const promises = [];
                     for(let i = 0; i < scripts.length; i ++) {
-                        promises.push(ajax.get(scripts[i].src))
+                        if(!scripts[i].src) {
+                            promises.push(new Promise((resolve, reject) => {resolve(scripts[i].innerHTML)}));
+                            continue;
+                        }
+
+                        const srcPath = path.isAbsolute(scripts[i].src) ? scripts[i].src : path.join(path.getDirectory(data.main), scripts[i].src);
+                        promises.push(ajax.get(srcPath));
                     }
 
                     return Promise.all(promises);
