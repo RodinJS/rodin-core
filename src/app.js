@@ -103,7 +103,6 @@ Promise.all(coreDependencies).then((data) => {
 });
 
 const bindTHREEJSRenderer = (_window, _renderer) => {
-
     watchFor('THREE.WebGLRenderer', _window, (_three) => {
         return class {
             constructor() {
@@ -114,20 +113,23 @@ const bindTHREEJSRenderer = (_window, _renderer) => {
                 });
             }
 
-            setClearColor() {
-
+            setClearColor(...args) {
+                // todo: add checks
+                return _renderer.setClearColor(...args);
             }
 
-            setSize() {
-
+            setSize(...args) {
+                // todo: add checks
+                return _renderer.setSize(...args);
             }
 
             getSize() {
                 return _renderer.getSize();
             }
 
-            setPixelRatio() {
-
+            setPixelRatio(...args) {
+                // todo: add checks
+                return _renderer.setPixelRatio(...args);
             }
 
             getPixelRatio() {

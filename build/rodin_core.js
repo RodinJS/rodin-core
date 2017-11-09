@@ -71,11 +71,23 @@
 
 	const isAbsolute = (path) => path.startsWith('/') || path.startsWith('http://') || path.startsWith('https://');
 
-	const join = (...args) => normalize(args.filter(i => i !== '').join('/'));
+	const join = (...args) => normalize(args.filter(i => i !== '').map(ignoreQueryString).join('/'));
 
-	const getDirectory = (path) => path.substring(0, path.lastIndexOf('/'));
+	const getDirectory = (path) => {
+	    path = ignoreQueryString(path);
+	    return path.substring(0, path.lastIndexOf('/'));
+	};
 
-	const getFile = (path) => path.substring(path.lastIndexOf('/'));
+	const getFile = (path) => {
+	    path = ignoreQueryString(path);
+	    return path.substring(path.lastIndexOf('/'));
+	};
+
+	const ignoreQueryString = (path) => {
+	    if(path.indexOf('?') === -1) return path;
+
+	    return path.substring(0, path.indexOf('?'));s;
+	};
 
 	const normalize = (path) => {
 	    let absolutePrefix = '';
@@ -4334,7 +4346,6 @@
 	});
 
 	const bindTHREEJSRenderer = (_window, _renderer) => {
-
 	    watchFor('THREE.WebGLRenderer', _window, (_three) => {
 	        return class {
 	            constructor() {
@@ -4345,20 +4356,23 @@
 	                });
 	            }
 
-	            setClearColor() {
-
+	            setClearColor(...args) {
+	                // todo: add checks
+	                return _renderer.setClearColor(...args);
 	            }
 
-	            setSize() {
-
+	            setSize(...args) {
+	                // todo: add checks
+	                return _renderer.setSize(...args);
 	            }
 
 	            getSize() {
 	                return _renderer.getSize();
 	            }
 
-	            setPixelRatio() {
-
+	            setPixelRatio(...args) {
+	                // todo: add checks
+	                return _renderer.setPixelRatio(...args);
 	            }
 
 	            getPixelRatio() {
